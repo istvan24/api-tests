@@ -58,7 +58,7 @@ public class EmployeesApiTests extends BaseEmployeesControllerTest {
                 .log().uri()
                 .contentType(ContentType.JSON)
                 .body("{\"employee_name\":\"Automation Test\"," +
-                        "\"employee_salary\":\"123\"," +
+                        "\"employee_salary\":\"1234\"," +
                         "\"employee_age\":\"40\", " +
                         "\"profile_image\":\"\"}")
                 .when()
