@@ -24,8 +24,8 @@ Use the following dummy pages for tests:
 ------------------------------------------------------------------------------------------------------------------------
 ## EmployeesApi
 ### Test Plan:
-Test case nr 1: Print all employees.
-Test case nr 2: Print an employee with ids help.
-Test case nr 3: Create a new employee.
-Test case nr 4: Update an existent employee.
-Test case nr 5: Delete an Employee.
+- Test case nr 1: Print all employees.
+- Test case nr 2: Print an employee with ids help.
+- Test case nr 3: Create a new employee.
+- Test case nr 4: Update an existent employee.
+- Test case nr 5: Delete an Employee.
