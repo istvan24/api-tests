@@ -6,7 +6,6 @@ import utils.ConstantUtils;
 import utils.GenericUtils;
 
 public class BaseEmployeesControllerTest {
-
     String apiConfig = ConstantUtils.API_CONFIG_FILE;
     String apiVersion, baseUrl;
 
