@@ -5,10 +5,7 @@ import io.restassured.response.Response;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -17,7 +14,7 @@ import static org.hamcrest.CoreMatchers.hasItem;
 public class CountriesApiTests extends tests.BaseCountriesControllerTest {
 
     @Test(description = "Get Romania country details.")
-    public void getCountryByName() {
+    public void getRomaniaCountryDetailsByName() {
 
         Response response = given()
                 .log().uri()
@@ -26,12 +23,25 @@ public class CountriesApiTests extends tests.BaseCountriesControllerTest {
                 .then()
                 .statusCode(200)
                 .contentType(ContentType.JSON)
-                .body("name.official[0]",
-                        equalTo("Romania")).
-                body("currencies.RON.symbol[0]",
-                        equalTo("lei"))
+                .body("name.official[0]", equalTo("Romania"))
+                .body("currencies.RON.symbol[0]", equalTo("lei"))
                 .extract().response();
         response.getBody().prettyPrint();
+    }
+
+    @Test(description = "This test verifies if the oficial Name for Germany is Federal Republic of Germany.")
+    public void assertGermanyCountryOfficialName() {
+
+        Response response = given()
+                .when()
+                .get("/name/{name}", "germany")
+                .then()
+                .statusCode(200)
+                .contentType(ContentType.JSON)
+                .extract().response();
+
+        String officialName = response.jsonPath().getString("[0].name.official");
+        Assert.assertEquals(officialName, "Federal Republic of Germany", "The official name is not as expected.");
     }
 
     @Test(description = "Check if the GET request for all the countries is with succes.")
@@ -44,19 +54,23 @@ public class CountriesApiTests extends tests.BaseCountriesControllerTest {
                 .statusCode(200);
     }
 
-    @Test(description = "Get the Hungary country searching after huf currency.")
-    public void getAllCurrencies() {
+    @Test(description = "This test verifies if the huf currency returns the capital of Hungary: Budapest.")
+    public void getBudapestCityBySearchingTheCurrency() {
 
-        given()
+        Response response = given()
+                .log().uri()
                 .when()
-                .get("/currency/huf")
+                .get("/currency/{currency}", "huf")
                 .then()
-                .statusCode(200);
+                .statusCode(200)
+                .contentType(ContentType.JSON)
+                .body("capital[0][0]", equalTo("Budapest"))
+                .extract().response();
+        response.getBody().prettyPrint();
     }
 
-
-    @Test(description = "This test verifies if the capital of Romania is Bucharest345.")
-    public void verifyCountriesCapital() {
+    @Test(description = "This test verifies if the capital of Romania is Bucharest345. The test will fail.")
+    public void verifyRomaniaCountryCapital() {
 
         Response response = given()
                 .log().uri()
@@ -72,7 +86,7 @@ public class CountriesApiTests extends tests.BaseCountriesControllerTest {
     }
 
     @Test(description = "This test verifies the alternative spelling of Romania.")
-    public void verifyAltSpelling() {
+    public void verifyAltSpellingForRomania() {
 
         given()
                 .log().uri()
@@ -87,7 +101,7 @@ public class CountriesApiTests extends tests.BaseCountriesControllerTest {
     }
 
     @Test(description = "This test verifies if the country borders for Romania are MDA, BGR, HUN, SRB and UKR.")
-    public void verifyCountryBorders() {
+    public void verifyRomaniaCountryBorders() {
 
         List<String> expectedBorders = Arrays.asList(
                 "MDA", "BGR", "HUN", "SRB", "UKR");
@@ -125,7 +139,7 @@ public class CountriesApiTests extends tests.BaseCountriesControllerTest {
     }
 
     @Test(description = "This test returned the data and the response time for the get request.")
-    public void testbody() {
+    public void getDataAndResponseTime() {
         Response response = given()
                 .log().uri()
                 .get("/name/{name}", "romania")
@@ -139,5 +153,4 @@ public class CountriesApiTests extends tests.BaseCountriesControllerTest {
         System.out.println("Data is " + data);
         System.out.println("Response time " + response.getTime());
     }
-
 }

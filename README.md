@@ -17,7 +17,7 @@ Use the following dummy pages for tests:
 - TC nr 4: Perform a negative test, by using an invalid caountry name.
 - TC nr 5: Verify the alternative spelling for a country.
 - TC nr 6: Check the bourders for a country.
-- TC nr 7: Verifies if the official language in Romania is Romanian."
+- TC nr 7: Verifies if the official language in Romania is Romanian.
 - TC nr 8: Return the data and the response time for a GET country request. 
 
 ## EmployeesApi
