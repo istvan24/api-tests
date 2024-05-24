@@ -10,6 +10,9 @@ import java.util.*;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 
 public class CountriesApiTests extends tests.BaseCountriesControllerTest {
 
@@ -44,7 +47,7 @@ public class CountriesApiTests extends tests.BaseCountriesControllerTest {
         Assert.assertEquals(officialName, "Federal Republic of Germany", "The official name is not as expected.");
     }
 
-    @Test(description = "Check if the GET request for all the countries is with succes.")
+    @Test(description = "Check if the GET request for all the countries is with success.")
     public void getAllCountries() {
 
         given()
@@ -152,5 +155,50 @@ public class CountriesApiTests extends tests.BaseCountriesControllerTest {
 
         System.out.println("Data is " + data);
         System.out.println("Response time " + response.getTime());
+    }
+
+    @Test(description = "This test verifies the Filter Response for Spain country, and prints the result.")
+    public void verifyTheFilterResponseForSpain() {
+        Response response = given()
+                .log().uri()
+                .get("/all?fields=name,capital,currencies")
+                .then()
+                .statusCode(200)
+                .extract().response();
+
+        String spainDetails = response.jsonPath().getString("find { it.name.common == 'Spain' }");
+
+        System.out.println("Spain Details: " + spainDetails);
+
+        String countryName = response.jsonPath().getString("find { it.name.common == 'Spain' }.name.common");
+        String capital = response.jsonPath().getString("find { it.name.common == 'Spain' }.capital[0]");
+
+        assertThat(countryName, is("Spain"));
+        assertThat(capital, is("Madrid"));
+    }
+
+    @Test(description = "This test verifies if all the subregions for Northern Europe are included.")
+    public void testGetCountriesInNorthernEurope() {
+
+        Response response = given()
+                .when()
+                .get("/subregion/Northern Europe")
+                .then()
+                .statusCode(200)
+                .extract().response();
+
+        String[] expectedCountries = {"Denmark", "Estonia", "Finland", "Iceland", "Ireland", "Latvia", "Lithuania", "Norway", "Sweden", "United Kingdom"};
+
+        for (String country : expectedCountries) {
+            // Extract the name and capital for each country
+            String countryName = response.jsonPath().getString("find { it.name.common == '" + country + "' }.name.common");
+            String capital = response.jsonPath().getString("find { it.name.common == '" + country + "' }.capital[0]");
+
+            System.out.println("Country: " + countryName + ", Capital: " + capital);
+
+            assertThat(countryName, is(notNullValue()));
+            assertThat(countryName, is(country));
+            assertThat(capital, is(notNullValue()));
+        }
     }
 }
